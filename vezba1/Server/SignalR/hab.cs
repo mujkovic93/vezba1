@@ -3,15 +3,33 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using vezba1.Shared;
 
 namespace vezba1.Server.SignalR
 {
-    public class hab:Hub
+    public class hab : Hub
     {
-        public async Task DodajArtikal()
+        public List<Artikli> korpa = new List<Artikli>();
+        public async Task SviArtikli()
         {
-            await Clients.Caller.SendAsync("KlijentMetoda", "Pozdravlja vas server!");
+            Console.WriteLine("Klijent trazi listu artikala");
+            Baza.Baza DB = new Baza.Baza();
+            var sviArt = DB.Artiklis.ToList();
+            await Clients.Caller.SendAsync("KlijentMetoda", sviArt);
         }
+
+        public async Task Korpa(Artikli a)
+        {
+            Console.WriteLine($"Kupac je dodao: {a.Ime}");
+        }
+        public async Task Uklonio(Artikli b)
+        {
+            Console.WriteLine($"Kupac je uklonio: {b.Ime}");
+
+        }
+
+       
+
 
     }
 }

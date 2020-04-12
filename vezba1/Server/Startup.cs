@@ -13,7 +13,13 @@ namespace vezba1.Server
     {
         public Startup(IConfiguration configuration)
         {
+
             Configuration = configuration;
+            using (var sql = new Baza.Baza())
+            {
+                //sql.Database.EnsureDeleted();
+                sql.Database.EnsureCreated();
+            }
         }
 
         public IConfiguration Configuration { get; }
