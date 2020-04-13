@@ -24,7 +24,7 @@ namespace vezba1.Server.SignalR
         }
         public async Task Uklonio(Artikli b)
         {
-            Console.WriteLine($"Kupac je uklonio: {b.Ime}");
+            Console.WriteLine($"Kupac je ukloniso: {b.Ime}");
 
         }
 
