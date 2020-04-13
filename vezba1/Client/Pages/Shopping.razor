@@ -2,15 +2,21 @@
 @using Microsoft.AspNetCore.SignalR.Client
 @using vezba1.Shared;
 @inject NavigationManager NM
+@inject IJSRuntime IsRunTime
+
+
 
 
 <h3 class="text-center">Shopping</h3>
-<div class="navigacija">
-    <button @onclick="Testiraj"><h4>Prodavnica</h4></button>
+<button @onclick="Testiraj"><h4>Prodavnica</h4></button>
+
+<button @onclick="Otvori"><h4>Korpa <p style="color:red;float:right;border:1px solid black; border-radius:10px;margin-left:10px;">@PoruceniArtikli.Count</p></h4></button>
+
+<div>
     <ul>
         @foreach (Artikli sas in Tekst)
         {
-        <li><button @onclick="(()=>Proizvod(sas))">+</button> @sas</li>
+            <li><button @onclick="(()=>Proizvod(sas))">+</button> @sas</li>
         }
     </ul>
 </div>
@@ -19,13 +25,13 @@
 
 
 
-<div>
-    <button><h4>Korpa</h4></button>
+<div style="visibility:@vidise">
+    <h1>Korpa:</h1>
     <ul>
         @foreach (Artikli ek in PoruceniArtikli)
         {
-        <li><button @onclick="(()=>Ukloni(ek))" >-</button> @ek Cena:@ek.Cena</li>
-     
+            <li><button @onclick="(()=>Ukloni(ek))">-</button> @ek Cena:@ek.Cena</li>
+
         }
         <p>Ukupna Cena: @UkupnaCena</p>
     </ul>
@@ -41,6 +47,7 @@
 
     public List<Artikli> PoruceniArtikli = new List<Artikli>();
     public int UkupnaCena { set; get; } = 0;
+    public string vidise { set; get; } = "visible";
 
     public HubConnection KaServeru;
 
@@ -65,6 +72,7 @@
 
     Task Testiraj()
     {
+
         return KaServeru.SendAsync("SviArtikli");
     }
 
@@ -73,6 +81,7 @@
         PoruceniArtikli.Add(a);
         UkupnaCena += int.Parse(a.Cena);
         KaServeru.SendAsync("Korpa", a);
+
     }
 
     public void Ukloni(Artikli b)
@@ -82,6 +91,18 @@
         KaServeru.SendAsync("Uklonio", b);
     }
 
+    public void Otvori()
+    {
+        if (vidise == "visible")
+        {
+            vidise = "hidden";
+        }
+        else
+        {
+            vidise = "visible";
+        }
+    }
 
 
 }
+
