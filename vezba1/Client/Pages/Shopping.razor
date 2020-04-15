@@ -24,19 +24,21 @@
 
 
 
-
-<div style="visibility:@vidise">
+@if (vidise == true)
+{
+<div>
     <h1>Korpa:</h1>
     <ul>
         @foreach (Artikli ek in PoruceniArtikli)
         {
-            <li><button @onclick="(()=>Ukloni(ek))">-</button> @ek Cena:@ek.Cena</li>
+            <li><button @onclick="(() => Ukloni(ek))">-</button> @ek Cena:@ek.Cena</li>
 
         }
-        <p>Ukupna Cena: @UkupnaCena</p>
+        <b><i><p>Ukupna Cena: @UkupnaCena</p></i></b>
     </ul>
 
 </div>
+}
 
 
 
@@ -47,7 +49,8 @@
 
     public List<Artikli> PoruceniArtikli = new List<Artikli>();
     public int UkupnaCena { set; get; } = 0;
-    public string vidise { set; get; } = "visible";
+    public bool vidise { set; get; }
+    public Korpaa k = new Korpaa();
 
     public HubConnection KaServeru;
 
@@ -61,18 +64,13 @@
             StateHasChanged();
         });
 
-        KaServeru.On<List<Artikli>>("EvoKorpe", esk =>
-        {
-            PoruceniArtikli = esk;
-            StateHasChanged();
-        });
+       
 
         await KaServeru.StartAsync();
     }
 
     Task Testiraj()
     {
-
         return KaServeru.SendAsync("SviArtikli");
     }
 
@@ -80,6 +78,8 @@
     {
         PoruceniArtikli.Add(a);
         UkupnaCena += int.Parse(a.Cena);
+
+
         KaServeru.SendAsync("Korpa", a);
 
     }
@@ -88,19 +88,13 @@
     {
         PoruceniArtikli.Remove(b);
         UkupnaCena -= int.Parse(b.Cena);
+
         KaServeru.SendAsync("Uklonio", b);
     }
 
     public void Otvori()
     {
-        if (vidise == "visible")
-        {
-            vidise = "hidden";
-        }
-        else
-        {
-            vidise = "visible";
-        }
+        vidise = !vidise;
     }
 
 

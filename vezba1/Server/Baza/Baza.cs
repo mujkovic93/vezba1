@@ -10,10 +10,12 @@ namespace vezba1.Server.Baza
     public class Baza : DbContext
     {
         public DbSet<Artikli> Artiklis { get; set; }
+        public DbSet<Korpaa> Korpaas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Artikli>().HasKey(i => i.ID);
+            modelBuilder.Entity<Korpaa>().HasKey(i=>i.ID);
         }
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
